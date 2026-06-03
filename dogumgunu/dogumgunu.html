@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Present for Baki 🎁</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:Arial;
+    overflow:hidden;
+    background:black;
+    color:white;
+}
+
+/* INTRO */
+#intro{
+    position:fixed;
+    inset:0;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+}
+
+#intro h1{
+    font-size:3rem;
+    animation:intro 2.5s ease forwards;
+}
+
+@keyframes intro{
+    0%{opacity:0;transform:scale(0.8)}
+    100%{opacity:1;transform:scale(1.2)}
+}
+
+/* MAIN TEXT */
+.hero{
+    text-align:center;
+    padding:20px;
+    position:relative;
+    z-index:5;
+}
+
+.hero h1{
+    font-size:3rem;
+    text-shadow:0 0 20px white;
+}
+
+.text{
+    margin-top:10px;
+    font-size:1.1rem;
+    opacity:0.9;
+}
+
+/* GAME */
+#game{
+    margin-top:15px;
+}
+
+.gift{
+    font-size:60px;
+    cursor:pointer;
+    transition:.3s;
+}
+.gift:hover{transform:scale(1.2)}
+
+/* PHOTO ANIMATION LAYER */
+.photo{
+    position:fixed;
+    width:220px;
+    height:320px;
+    object-fit:cover;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(255,255,255,0.3);
+    opacity:0;
+    z-index:2;
+}
+
+/* RIGHT & LEFT ANIMATIONS */
+@keyframes fromRight{
+    0%{transform:translateX(120vw) scale(0.8);opacity:0}
+    10%{opacity:1}
+    50%{transform:translateX(50vw) scale(1)}
+    100%{transform:translateX(-120vw) scale(0.8);opacity:0}
+}
+
+@keyframes fromLeft{
+    0%{transform:translateX(-120vw) scale(0.8);opacity:0}
+    10%{opacity:1}
+    50%{transform:translateX(50vw) scale(1)}
+    100%{transform:translateX(120vw) scale(0.8);opacity:0}
+}
+
+/* EFFECTS */
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+}
+
+.heart{
+    position:fixed;
+    animation:heart 4s linear forwards;
+}
+@keyframes heart{
+    to{transform:translateY(-120vh);opacity:0}
+}
+
+.confetti{
+    position:fixed;
+    width:10px;height:10px;
+    top:-20px;
+    animation:fall 4s linear forwards;
+}
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(720deg)}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+    <h1>A PRESENT FOR BAKI 🎁</h1>
+</div>
+
+<audio id="music" loop>
+<source src="muzik.mp3">
+</audio>
+
+<canvas id="fx"></canvas>
+
+<!-- MAIN TEXT -->
+<div class="hero">
+    <h1>🎂 İYİ Kİ DOĞDUN BAKİ 🎉</h1>
+
+    <div class="text">
+        Doğum günün kutlu olsun nigga✨<br>
+        Nice skisli senelere❤️<br>
+        Baska ne desem bilemedim🥀
+    </div>
+
+    <div id="game">
+        <h3>🎮 Hediyeyi seç</h3>
+        <div>
+            <span class="gift">🎁</span>
+            <span class="gift">🎁</span>
+            <span class="gift">🎁</span>
+        </div>
+        <p id="msg"></p>
+    </div>
+</div>
+
+<script>
+
+/* INTRO */
+setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+},2500);
+
+/* MUSIC */
+document.body.addEventListener("click",()=>{
+    document.getElementById("music").play();
+},{once:true});
+
+/* GAME */
+document.querySelectorAll(".gift").forEach((g,idx)=>{
+    g.onclick=()=>{
+        if(idx===1){
+            document.getElementById("msg").innerText="🎉Doğru Hediye!1 senelik infaz pass";
+            startEffects();
+            startPhotos();
+        }else{
+            document.getElementById("msg").innerText="❌ yanlışı seçtin nigga 😄";
+        }
+    }
+});
+
+/* PHOTOS */
+const photos=[
+"foto1.jpg",
+"foto2.jpg",
+"foto3.jpg",
+"foto4.jpg",
+"foto5.jpg",
+"foto6.jpg"
+];
+
+let index=0;
+
+function spawnPhoto(){
+    let img=document.createElement("img");
+    img.src=photos[index%photos.length];
+    img.className="photo";
+
+    let fromRight=index%2===0;
+
+    img.style.top=(20+Math.random()*50)+"vh";
+
+    if(fromRight){
+        img.style.animation="fromRight 6s linear forwards";
+    }else{
+        img.style.animation="fromLeft 6s linear forwards";
+    }
+
+    document.body.appendChild(img);
+
+    setTimeout(()=>img.remove(),6000);
+
+    index++;
+}
+
+function startPhotos(){
+    spawnPhoto();
+    setInterval(spawnPhoto,1200);
+}
+
+/* EFFECTS */
+function startEffects(){
+
+/* HEART */
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.top="100vh";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+},200);
+
+/* CONFETTI */
+setInterval(()=>{
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=["red","blue","yellow","pink","purple"][Math.random()*5|0];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+},120);
+
+/* FIREWORK */
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let particles=[];
+
+function boom(x,y){
+    for(let i=0;i<60;i++){
+        particles.push({
+            x,y,
+            vx:Math.cos(i)*Math.random()*5,
+            vy:Math.sin(i)*Math.random()*5,
+            alpha:1
+        });
+    }
+}
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.15)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,i)=>{
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.alpha-=0.01;
+
+        ctx.fillStyle="rgba(255,255,255,"+p.alpha+")";
+        ctx.fillRect(p.x,p.y,3,3);
+
+        if(p.alpha<=0)particles.splice(i,1);
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+setInterval(()=>{
+    boom(Math.random()*canvas.width,Math.random()*canvas.height/2);
+},900);
+
+}
+
+</script>
+
+</body>
+</html>
